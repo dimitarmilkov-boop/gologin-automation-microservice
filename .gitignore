@@ -85,4 +85,4 @@ alembic/versions/*.py
 
 # Backup files
 *.bak
-*.backup
+*.backup"previous env.txt" 
