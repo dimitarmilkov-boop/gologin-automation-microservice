@@ -10,7 +10,6 @@ from app.config import settings
 from app.api.routes import router as api_router
 from app.database import engine, Base
 from app.services.gologin_service import GoLoginService
-from app.services.oauth_service import OAuthService
 from app.services.automation import ProfileAutomator
 from app.services.workers.sync_worker import ProfileSyncWorker
 from app.services.workers.cleanup_worker import CleanupWorker
@@ -37,10 +36,7 @@ async def lifespan(app: FastAPI):
     await gologin_service.initialize()
     app.state.gologin_service = gologin_service
 
-    oauth_service = OAuthService()
-    app.state.oauth_service = oauth_service
-
-    profile_automator = ProfileAutomator(gologin_service, oauth_service)
+    profile_automator = ProfileAutomator(gologin_service)
     app.state.profile_automator = profile_automator
 
     # Initialize background workers

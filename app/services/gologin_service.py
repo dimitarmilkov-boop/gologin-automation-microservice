@@ -231,23 +231,23 @@ class GoLoginService:
             )
             return False
 
-    async def get_profile_for_account(self, account_id: str, db: Session) -> Optional[Profile]:
-        """Find profile by account ID in database - Direct DB access as per DDD guide"""
+    async def get_profile_by_name(self, profile_name: str, db: Session) -> Optional[Profile]:
+        """Find profile by GoLogin profile name"""
         try:
             profile = db.query(Profile).filter(
-                Profile.account_id == account_id.lower()
+                Profile.profile_name == profile_name.lower()
             ).first()
 
             if profile:
                 logger.debug(
-                    "profile.found_for_account",
-                    account_id=account_id,
+                    "profile.found_by_name",
+                    profile_name=profile_name,
                     profile_id=profile.id
                 )
             else:
                 logger.warning(
-                    "profile.not_found_for_account",
-                    account_id=account_id
+                    "profile.not_found_by_name",
+                    profile_name=profile_name
                 )
 
             return profile
@@ -255,7 +255,7 @@ class GoLoginService:
         except Exception as e:
             logger.error(
                 "profile.database_error",
-                account_id=account_id,
+                profile_name=profile_name,
                 error=str(e),
                 exc_info=True
             )
@@ -279,13 +279,13 @@ class GoLoginService:
 
             for gl_profile in gologin_profiles:
                 profile_id = gl_profile.get("id")
-                account_name = gl_profile.get("name", "").lower().strip()
+                profile_name = gl_profile.get("name", "").lower().strip()
 
-                if not account_name or not profile_id:
+                if not profile_name or not profile_id:
                     logger.warning(
                         "profile_sync.invalid_profile",
                         profile_id=profile_id,
-                        account_name=account_name
+                        profile_name=profile_name
                     )
                     continue
 
@@ -294,8 +294,8 @@ class GoLoginService:
 
                 if existing:
                     # Update existing profile
-                    existing.account_id = account_name
-                    existing.name = gl_profile.get("name")
+                    existing.profile_name = profile_name
+                    existing.display_name = gl_profile.get("name")
                     existing.proxy = gl_profile.get("proxy")
                     existing.browser_type = gl_profile.get("browserType", "chrome")
                     existing.last_sync = datetime.utcnow()
@@ -304,15 +304,15 @@ class GoLoginService:
                     logger.debug(
                         "profile_sync.updated",
                         profile_id=profile_id,
-                        account_id=account_name
+                        profile_name=profile_name
                     )
 
                 else:
                     # Create new profile
                     new_profile = Profile(
                         id=profile_id,
-                        account_id=account_name,
-                        name=gl_profile.get("name"),
+                        profile_name=profile_name,
+                        display_name=gl_profile.get("name"),
                         proxy=gl_profile.get("proxy"),
                         browser_type=gl_profile.get("browserType", "chrome"),
                         status="active",
@@ -324,7 +324,7 @@ class GoLoginService:
                     logger.debug(
                         "profile_sync.created",
                         profile_id=profile_id,
-                        account_id=account_name
+                        profile_name=profile_name
                     )
 
             # Commit changes

@@ -9,8 +9,6 @@ selenium==4.15.2
 httpx==0.25.2
 python-dotenv==1.0.0
 redis==5.0.1
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 asyncpg==0.29.0
 tenacity==8.2.3

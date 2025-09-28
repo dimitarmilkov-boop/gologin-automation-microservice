@@ -27,7 +27,6 @@ def get_db() -> Generator[Session, None, None]:
 
 # Service instances (singleton pattern)
 _gologin_service = None
-_oauth_service = None
 _profile_automator = None
 
 def get_gologin_service():
@@ -38,23 +37,14 @@ def get_gologin_service():
         _gologin_service = GoLoginService()
     return _gologin_service
 
-def get_oauth_service():
-    """Get or create OAuth service instance"""
-    global _oauth_service
-    if not _oauth_service:
-        from app.services.oauth_service import OAuthService
-        _oauth_service = OAuthService()
-    return _oauth_service
-
 def get_profile_automator(
-    gologin_service = Depends(get_gologin_service),
-    oauth_service = Depends(get_oauth_service)
+    gologin_service = Depends(get_gologin_service)
 ):
     """Get or create Profile Automator instance"""
     global _profile_automator
     if not _profile_automator:
         from app.services.automation import ProfileAutomator
-        _profile_automator = ProfileAutomator(gologin_service, oauth_service)
+        _profile_automator = ProfileAutomator(gologin_service)
     return _profile_automator
 
 # Authentication dependency

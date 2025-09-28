@@ -25,18 +25,8 @@ class Settings(BaseSettings):
 
     aiott_api_url: str
     aiott_api_key: str
-
-    aiott1_client_id: str
-    aiott1_client_secret: str
-    aiott1_callback_url: str
-
-    aiott2_client_id: str
-    aiott2_client_secret: str
-    aiott2_callback_url: str
-
-    aiott3_client_id: str
-    aiott3_client_secret: str
-    aiott3_callback_url: str
+    aiott_status_poll_interval: int = 5
+    aiott_status_timeout: int = 120
 
     sentry_dsn: Optional[str] = None
     log_level: str = "INFO"
