@@ -232,3 +232,4 @@ Selenium or other heavy dependencies that we do not want in the FastAPI runtime.
 - Document run-books for operators that rely on the CLI or scripts.
 - Audit infrastructure adapters to determine which legacy flows can be retired
   once the new service covers all use-cases.
+- Added unit suites under `tests/services/gologin/` (`test_proxy_updater.py`) to cover proxy rotation and Cloudflare handler scenarios with mocked HTTP/driver dependencies.
